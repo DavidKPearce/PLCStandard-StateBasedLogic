@@ -1,0 +1,64 @@
+
+FAULTS:
+
+By default, all states will fault after a specified amount of time.
+
+Faults are typically generated when "too much" time is spent is any specific state without advancing to the next state.
+
+
+
+
+
+Amount of Time Spent in Each State
+----------------------------------
+
+"Waiting State"
+- This state will NEVER Fault -- it is waiting for some condition that requires an uncertainly long period of time.
+    Waiting is a "Wait State" indicates that a state machine is waiting to be asked to do something (it is in a holding pattern).
+    When these conditions are met, this state will branched to the next state.
+
+
+"Long Fault State"
+- This state will fault after specific conditions are NOT met and the "Long Fault Timer" is exhausted.
+    e.g. A servo motion or robot motion that takes a long time.
+
+
+"Typical State"
+- This state will fault after specific conditions are NOT met and the "Fault Timer" is exhausted.
+
+
+***"Immediate Fault State" 
+- This state will fault immediately upon being branched-to/executed.
+- This state is typically branched-to/executed from a "Wait State", "Long Fault State", or "Typical State" in order to skip the
+     time delay (timer to-be-exhausted) associated with a specific state.
+
+
+***Unique/Different Amount of Time Before Fault
+- In some circumstances, a state should fault at a time limit NOT equal to the "Long Fault Timer" or "Fault Timer".
+      a unique timer can be used to generate a fault while in this "Uniquely timed State".
+- This "unique time" can be implemented by marking the state as a "Wait State" that is provided with a timer to
+      branch to an "Immediate Fault State".
+
+
+
+Defining Text/Fault Message Associated with Each Fault
+------------------------------------------------------
+
+1. Peruse through each state in your state machine for each component.
+
+2. Look at each state for conditions that would cause the state machine to NOT ADVANCE.
+     a. When doing this, you may find MULTIPLE conditions (contacts) that would cause that state machine to NOT ADVANCE.
+     b. If the multiple conditions can be separated into multiple states, this is preferrable...because this makes
+            defining very specific fault-messages possible.
+     c. If multiple conditions require multiple fault messages, THIS CAN BE ACCOMMODATED (explanation required).
+
+3. "Fault Code", the unique value (DINT) that is associated with a Fault experienced in a Specific State.
+	SSCCXXXXF - 	SS 	= Station Number
+			CC 	= Component Number
+			XXXX 	= State Number
+			F	= Fault Number  (Typically, 1)
+
+4. It is possible to examine a state and discover that there is NO condition that causes the state machine to NOT ADVANCE.
+          Such states have a logical branch for ALL conditions tested within the state (this is called EXHAUSTIVE LOGIC).
+
+
